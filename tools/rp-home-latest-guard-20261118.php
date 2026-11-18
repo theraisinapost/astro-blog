@@ -62,6 +62,25 @@ function rp_latest_transform(string $html): string {
         '$1Newsroom$2', $updated
     );
     if (!is_string($updated)) throw new RuntimeException('Cannot normalise Newsroom heading');
+    /* Subtle scroll position + live story count for the first reporting rail. */
+    $updated = preg_replace(
+        '~(<link\b[^>]*href="/rp-newsroom-rail-ux\.css)(?:\?[^"]*)?("[^>]*>)~i',
+        '$1?v=20261118p$2', $updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise Newsroom rail progress CSS');
+    if (!str_contains($updated,'href="/rp-newsroom-rail-ux.css')) {
+        $updated=str_replace('</head>',
+            '<link rel="stylesheet" href="/rp-newsroom-rail-ux.css?v=20261118p">' . "\n</head>",$updated);
+    }
+    $updated = preg_replace(
+        '~(<script\b[^>]*src="/rp-newsroom-rail-ux\.js)(?:\?[^"]*)?("[^>]*></script>)~i',
+        '$1?v=20261118p$2', $updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise Newsroom rail progress JS');
+    if (!str_contains($updated,'src="/rp-newsroom-rail-ux.js')) {
+        $updated=str_replace('</head>',
+            '<script defer src="/rp-newsroom-rail-ux.js?v=20261118p"></script>' . "\n</head>",$updated);
+    }
     return $updated;
 }
 if (in_array('--self-test', $argv, true)) {
@@ -74,6 +93,8 @@ if (in_array('--self-test', $argv, true)) {
         substr_count($twice,'href="/rp-home-dividers.css')!==1 ||
         substr_count($twice,'href="/rp-home-card-focus.css')!==1 ||
         substr_count($twice,'href="/rp-home-newsroom-vertical.css')!==1 ||
+        substr_count($twice,'href="/rp-newsroom-rail-ux.css')!==1 ||
+        substr_count($twice,'src="/rp-newsroom-rail-ux.js')!==1 ||
         substr_count($twice,'id="section-more-reporting">Newsroom</h3>')!==1 ||
         str_contains($twice,'>Across the newsroom</h3>') ||
         rp_latest_transform('<html><head></head><body>not homepage</body></html>')!==
@@ -97,7 +118,9 @@ try {
       [$private.'/raisina-word-riddle-art.webp',$root.'/images/raisina-word-riddle-art.webp',3000],
       [$private.'/rp-home-dividers-master.css',$root.'/rp-home-dividers.css',1200],
       [$private.'/rp-home-card-focus-master.css',$root.'/rp-home-card-focus.css',2400],
-      [$private.'/rp-home-newsroom-vertical-master.css',$root.'/rp-home-newsroom-vertical.css',2200]];
+      [$private.'/rp-home-newsroom-vertical-master.css',$root.'/rp-home-newsroom-vertical.css',2200],
+      [$private.'/rp-newsroom-rail-ux-master.css',$root.'/rp-newsroom-rail-ux.css',1400],
+      [$private.'/rp-newsroom-rail-ux-master.js',$root.'/rp-newsroom-rail-ux.js',2500]];
     foreach ($filePairs as [$source,$target,$minSize]) {
         if (!is_file($source) || filesize($source)<$minSize) throw new RuntimeException('Missing approved source '.basename($source));
         if (is_file($target) && sha1_file($target)===sha1_file($source)) continue;
