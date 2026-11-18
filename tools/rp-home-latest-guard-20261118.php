@@ -47,10 +47,25 @@ function rp_latest_transform(string $html): string {
         $updated=str_replace('</head>',
             '<link rel="stylesheet" href="/rp-home-card-focus.css?v=20261118h">' . "\n</head>", $updated);
     }
+    /* Swiss vertical NEWSROOM label; keep the underlying semantic heading. */
+    $updated = preg_replace(
+        '~(<link\b[^>]*href="/rp-home-newsroom-vertical\.css)(?:\?[^"]*)?("[^>]*>)~i',
+        '$1?v=20261118i$2', $updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise Newsroom stylesheet');
+    if (!str_contains($updated, 'href="/rp-home-newsroom-vertical.css')) {
+        $updated=str_replace('</head>',
+            '<link rel="stylesheet" href="/rp-home-newsroom-vertical.css?v=20261118i">' . "\n</head>", $updated);
+    }
+    $updated = preg_replace(
+        '~(<h3\b[^>]*id="section-more-reporting"[^>]*>)(?:Across the newsroom|Newsroom)(</h3>)~i',
+        '$1Newsroom$2', $updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise Newsroom heading');
     return $updated;
 }
 if (in_array('--self-test', $argv, true)) {
-    $html='<html><head></head><body><aside><div id="home-24h-grid"></div><section id="rp-home-daily-games"></section></aside></body></html>';
+    $html='<html><head></head><body><aside><div id="home-24h-grid"></div><section id="rp-home-daily-games"></section></aside><div class="home-secondary-heading"><h3 id="section-more-reporting">Across the newsroom</h3></div></body></html>';
     $html=str_replace('</body>',str_repeat('x',600).'</body>',$html);
     $once=rp_latest_transform($html);
     $twice=rp_latest_transform($once);
@@ -58,6 +73,9 @@ if (in_array('--self-test', $argv, true)) {
         substr_count($twice,'href="/rp-home-daily-games.css')!==1 ||
         substr_count($twice,'href="/rp-home-dividers.css')!==1 ||
         substr_count($twice,'href="/rp-home-card-focus.css')!==1 ||
+        substr_count($twice,'href="/rp-home-newsroom-vertical.css')!==1 ||
+        substr_count($twice,'id="section-more-reporting">Newsroom</h3>')!==1 ||
+        str_contains($twice,'>Across the newsroom</h3>') ||
         rp_latest_transform('<html><head></head><body>not homepage</body></html>')!==
             '<html><head></head><body>not homepage</body></html>') {
         fwrite(STDERR, "FAIL: idempotent homepage guard\n"); exit(1);
@@ -78,7 +96,8 @@ try {
       [$private.'/raisina-sudoku-art.webp',$root.'/images/raisina-sudoku-art.webp',3000],
       [$private.'/raisina-word-riddle-art.webp',$root.'/images/raisina-word-riddle-art.webp',3000],
       [$private.'/rp-home-dividers-master.css',$root.'/rp-home-dividers.css',1200],
-      [$private.'/rp-home-card-focus-master.css',$root.'/rp-home-card-focus.css',2400]];
+      [$private.'/rp-home-card-focus-master.css',$root.'/rp-home-card-focus.css',2400],
+      [$private.'/rp-home-newsroom-vertical-master.css',$root.'/rp-home-newsroom-vertical.css',2200]];
     foreach ($filePairs as [$source,$target,$minSize]) {
         if (!is_file($source) || filesize($source)<$minSize) throw new RuntimeException('Missing approved source '.basename($source));
         if (is_file($target) && sha1_file($target)===sha1_file($source)) continue;
