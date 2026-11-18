@@ -1,0 +1,61 @@
+/* The Raisina Post — Swiss editorial hairline dividers.
+ * Homepage only. No DOM/layout/card, 24 Hours, Games or Power Brief changes.
+ * Each line sits inside already-existing section whitespace.
+ */
+body:has(.editorial-cover) main#main {
+  --rp-home-divider-color:#e6e6e6;
+}
+
+/* Distinguish the hero + 24 Hours + two Games from Across the Newsroom. */
+body:has(.editorial-cover) main#main #latest .home-secondary-heading {
+  position:relative;
+}
+body:has(.editorial-cover) main#main #latest .home-secondary-heading::before {
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:-19px;
+  height:1px;
+  background:var(--rp-home-divider-color);
+  pointer-events:none;
+}
+
+/* Three major chapter boundaries: Opinion, Power Brief and Research. */
+body:has(.editorial-cover) main#main > #home-crossover,
+body:has(.editorial-cover) main#main > #archive,
+body:has(.editorial-cover) main#main > #research-desk {
+  position:relative;
+}
+body:has(.editorial-cover) main#main > #home-crossover::before,
+body:has(.editorial-cover) main#main > #archive::before,
+body:has(.editorial-cover) main#main > #research-desk::before {
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:clamp(22px,2.15vw,32px);
+  height:1px;
+  background:var(--rp-home-divider-color);
+  pointer-events:none;
+}
+
+/* Final rule separates Research from the footer without extra content. */
+body:has(.editorial-cover) main#main > #research-desk::after {
+  content:"";
+  display:block;
+  height:1px;
+  margin-top:clamp(28px,3vw,42px);
+  background:var(--rp-home-divider-color);
+  pointer-events:none;
+}
+@media(max-width:760px) {
+  body:has(.editorial-cover) main#main #latest .home-secondary-heading::before {
+    top:-16px;
+  }
+  body:has(.editorial-cover) main#main > #home-crossover::before,
+  body:has(.editorial-cover) main#main > #archive::before,
+  body:has(.editorial-cover) main#main > #research-desk::before {
+    top:18px;
+  }
+}
