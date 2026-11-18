@@ -100,6 +100,25 @@ function rp_latest_transform(string $html): string {
         $updated=str_replace('</head>',
             '<script defer src="/rp-editorial-section-reveal.js?v=20261118q"></script>' . "\n</head>",$updated);
     }
+    /* Native image-to-article navigation: both pages opt in, never intercept links. */
+    $updated = preg_replace(
+        '~(<link\b[^>]*href="/rp-article-photo-transition\.css)(?:\?[^"]*)?("[^>]*>)~i',
+        '$1?v=20261118r$2',$updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise photo transition CSS');
+    if (!str_contains($updated,'href="/rp-article-photo-transition.css')) {
+        $updated=str_replace('</head>',
+            '<link rel="stylesheet" href="/rp-article-photo-transition.css?v=20261118r">' . "\n</head>",$updated);
+    }
+    $updated = preg_replace(
+        '~(<script\b[^>]*src="/rp-article-photo-transition\.js)(?:\?[^"]*)?("[^>]*></script>)~i',
+        '$1?v=20261118r$2',$updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise photo transition JS');
+    if (!str_contains($updated,'src="/rp-article-photo-transition.js')) {
+        $updated=str_replace('</head>',
+            '<script src="/rp-article-photo-transition.js?v=20261118r"></script>' . "\n</head>",$updated);
+    }
     return $updated;
 }
 if (in_array('--self-test', $argv, true)) {
@@ -116,6 +135,8 @@ if (in_array('--self-test', $argv, true)) {
         substr_count($twice,'src="/rp-newsroom-rail-ux.js')!==1 ||
         substr_count($twice,'href="/rp-editorial-section-reveal.css')!==1 ||
         substr_count($twice,'src="/rp-editorial-section-reveal.js')!==1 ||
+        substr_count($twice,'href="/rp-article-photo-transition.css')!==1 ||
+        substr_count($twice,'src="/rp-article-photo-transition.js')!==1 ||
         substr_count($twice,'id="section-more-reporting">Newsroom</h3>')!==1 ||
         str_contains($twice,'>Across the newsroom</h3>') ||
         rp_latest_transform('<html><head></head><body>not homepage</body></html>')!==
@@ -143,7 +164,9 @@ try {
       [$private.'/rp-newsroom-rail-ux-master.css',$root.'/rp-newsroom-rail-ux.css',1400],
       [$private.'/rp-newsroom-rail-ux-master.js',$root.'/rp-newsroom-rail-ux.js',2500],
       [$private.'/rp-editorial-section-reveal-master.css',$root.'/rp-editorial-section-reveal.css',1700],
-      [$private.'/rp-editorial-section-reveal-master.js',$root.'/rp-editorial-section-reveal.js',1000]];
+      [$private.'/rp-editorial-section-reveal-master.js',$root.'/rp-editorial-section-reveal.js',1000],
+      [$private.'/rp-article-photo-transition-master.css',$root.'/rp-article-photo-transition.css',700],
+      [$private.'/rp-article-photo-transition-master.js',$root.'/rp-article-photo-transition.js',3000]];
     foreach ($filePairs as [$source,$target,$minSize]) {
         if (!is_file($source) || filesize($source)<$minSize) throw new RuntimeException('Missing approved source '.basename($source));
         if (is_file($target) && sha1_file($target)===sha1_file($source)) continue;
