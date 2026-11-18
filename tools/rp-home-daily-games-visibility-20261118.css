@@ -45,3 +45,71 @@ body:has(.editorial-cover) #latest .home-24h--hero #rp-home-daily-games {
   }
   body:has(.editorial-cover) #latest .home-24h--hero .home-24h-scroll-buttons {display:none!important}
 }
+
+/* home game icon prominence v2: same editorial bento rhythm as 24 Hours,
+   displaying the game's OWN original artwork via /game-icons.svg. */
+body:has(.editorial-cover) #latest .rp-home-daily-games-list {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:12px;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 88px;
+  align-items:center;
+  gap:16px;
+  min-height:158px;
+  padding:18px 20px;
+  border:0;
+  border-radius:8px;
+  background:#f9f9f9;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-copy {
+  grid-column:1;
+  grid-row:1;
+  min-width:0;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-icon {
+  grid-column:2;
+  grid-row:1;
+  display:grid;
+  place-items:center;
+  width:88px;
+  height:88px;
+  min-width:88px;
+  flex:none;
+  border-radius:8px;
+  background:#191919;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-icon svg {
+  display:block;
+  width:64px;
+  height:64px;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-copy strong {
+  font:550 clamp(16px,1.26vw,20px)/1.34 Inter,Arial,sans-serif;
+  letter-spacing:-.03em;
+  color:#1e1e1e;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-copy small {
+  margin-top:9px;
+  color:#606060;
+  font:400 12px/1.55 Inter,Arial,sans-serif;
+}
+@media(max-width:760px) {
+  body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game {
+    grid-template-columns:minmax(0,1fr) 64px;
+    gap:12px;
+    min-height:120px;
+    padding:15px 16px;
+  }
+  body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-icon {
+    width:64px;
+    height:64px;
+    min-width:64px;
+  }
+  body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-icon svg {
+    width:47px;
+    height:47px;
+  }
+}
