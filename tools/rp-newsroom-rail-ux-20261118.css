@@ -1,0 +1,64 @@
+/* The Raisina Post — editorial Newsroom rail progress.
+ * Built as a quiet visual companion to the existing drag/snap interaction.
+ * No cards, overlays, sizing, semantic links or neighboring rails are changed.
+ */
+body:has(.editorial-cover) main#main #latest > .rp-newsroom-rail-status {
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  min-height:16px;
+  margin-top:10px;
+  padding:0;
+  color:#676767;
+  font:500 10px/1.3 Inter,Manrope,Arial,sans-serif;
+  letter-spacing:.045em;
+  font-variant-numeric:tabular-nums;
+  user-select:none;
+}
+body:has(.editorial-cover) main#main #latest > .rp-newsroom-rail-status[hidden] {
+  display:none!important;
+}
+body:has(.editorial-cover) main#main #latest .rp-newsroom-rail-progress {
+  position:relative;
+  display:block;
+  flex:none;
+  width:min(192px,33vw);
+  height:2px;
+  border:0;
+  border-radius:2px;
+  background:#dfdfdf;
+  overflow:hidden;
+}
+body:has(.editorial-cover) main#main #latest .rp-newsroom-rail-thumb {
+  position:absolute;
+  inset-block:0;
+  left:0;
+  width:24%;
+  height:100%;
+  border-radius:2px;
+  background:#a33340;
+  transition:width .18s ease;
+  will-change:auto;
+}
+body:has(.editorial-cover) main#main #latest .rp-newsroom-rail-counter {
+  display:block;
+  min-width:47px;
+  text-align:right;
+  white-space:nowrap;
+}
+@media(max-width:760px) {
+  body:has(.editorial-cover) main#main #latest > .rp-newsroom-rail-status {
+    gap:9px;
+    margin-top:8px;
+  }
+  body:has(.editorial-cover) main#main #latest .rp-newsroom-rail-progress {
+    width:min(142px,35vw);
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  body:has(.editorial-cover) main#main #latest .rp-newsroom-rail-thumb {
+    transition:none!important;
+  }
+}
