@@ -1,16 +1,16 @@
-/* The Raisina Post — Swiss vertical newsroom masthead, 2026-11-18.
- * Scope: the homepage "Across the Newsroom" reporting rail ONLY.
- * Keep every card, focus-mode overlay, carousel dimensions, and all other sections.
+/* The Raisina Post — moving vertical NEWSROOM masthead, 18 Nov 2026.
+ * ONE editorial label belongs to the first reporting article itself.
+ * It scrolls and moves with that card, with no background or decorative box.
+ * The original section heading remains in the DOM for accessibility.
  */
 body:has(.editorial-cover) main#main #latest.frontpage {
-  --rp-newsroom-rail-inset:clamp(70px,7.1vw,102px);
+  --rp-newsroom-letter-width:clamp(69px,6.8vw,105px);
 }
-
-/* Move the section title into the beginning of its carousel rather than above it.
- * The heading stays a real H3 in the DOM for accessibility/SEO. */
+/* Preserve a single semantic H3 for navigation, but don't display a
+ * stationary title above the news rail. The first card owns the visual. */
 body:has(.editorial-cover) main#main #latest .home-secondary-heading {
   position:relative!important;
-  z-index:4;
+  z-index:auto!important;
   display:block!important;
   height:0!important;
   min-height:0!important;
@@ -20,55 +20,78 @@ body:has(.editorial-cover) main#main #latest .home-secondary-heading {
   overflow:visible!important;
   pointer-events:none;
 }
+body:has(.editorial-cover) main#main #latest .home-secondary-heading > h3,
 body:has(.editorial-cover) main#main #latest .home-secondary-heading > span {
-  display:none!important;
-}
-body:has(.editorial-cover) main#main #latest .home-secondary-heading > h3 {
   position:absolute!important;
-  z-index:5;
-  top:20px;
-  left:calc(var(--rp-newsroom-rail-inset) - clamp(29px,2.85vw,40px));
-  display:block!important;
-  width:max-content;
-  max-width:none;
-  min-width:0;
-  margin:0!important;
-  padding:12px 7px 13px!important;
-  border-left:2px solid #ae3642;
-  background:rgba(255,255,255,.94);
-  color:#151515!important;
-  font:800 clamp(29px,3.05vw,46px)/1.06 Inter,Manrope,Arial,sans-serif!important;
-  letter-spacing:-.065em!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip-path:inset(50%)!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap;
+  border:0!important;
+  background:transparent!important;
+}
+/* Reserve a slender column on the LEFT of the first article. This is part
+ * of the actual horizontal scroll area; it scrolls off with the article. */
+body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail {
+  box-sizing:border-box!important;
+  padding-left:var(--rp-newsroom-letter-width)!important;
+  scroll-padding-inline-start:var(--rp-newsroom-letter-width);
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+/* Overflow must be visible on the first card for its decorative masthead to
+ * extend into the reserved column. Image/copy remain inside the card. */
+body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
+  > .rail-story:first-child {
+  position:relative;
+  overflow:visible!important;
+}
+/* FULL PHOTO HEIGHT, NO BACKGROUND. Oversized bold condensed lettering
+ * almost touches the top and bottom of the photograph, with a very small
+ * overlap onto its left edge. This belongs to the card, not the viewport. */
+body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
+  > .rail-story:first-child::before {
+  content:"NEWSROOM";
+  position:absolute;
+  z-index:3;
+  box-sizing:border-box;
+  inset-block:0;
+  left:calc(-1 * var(--rp-newsroom-letter-width) + 1px);
+  width:calc(var(--rp-newsroom-letter-width) + 9px);
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  color:#111;
+  font:850 clamp(37px,4.55vw,62px)/.92 Inter,Manrope,Arial,sans-serif;
+  letter-spacing:-.055em;
   text-transform:uppercase;
   white-space:nowrap;
-  text-wrap:nowrap;
   writing-mode:vertical-rl;
   transform:rotate(180deg);
   transform-origin:center;
   user-select:none;
   pointer-events:none;
 }
-/* The first photo shifts slightly to the right. The vertical masthead
- * intentionally overlays ~10px of its left edge without blocking clicks. */
-body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail {
-  box-sizing:border-box!important;
-  padding-left:var(--rp-newsroom-rail-inset)!important;
-  scroll-padding-inline-start:var(--rp-newsroom-rail-inset);
-}
+/* Match the exact height of the first article image, including responsive
+ * reductions. No layout change to the other cards or sections. */
 @media(max-width:760px) {
   body:has(.editorial-cover) main#main #latest.frontpage {
-    --rp-newsroom-rail-inset:62px;
+    --rp-newsroom-letter-width:57px;
   }
-  body:has(.editorial-cover) main#main #latest .home-secondary-heading > h3 {
-    top:18px;
-    left:calc(var(--rp-newsroom-rail-inset) - 29px);
-    padding:9px 5px 10px!important;
-    font-size:28px!important;
-    letter-spacing:-.055em!important;
-  }
-}
-@media(prefers-reduced-motion:reduce) {
-  body:has(.editorial-cover) main#main #latest .home-secondary-heading > h3 {
-    transition:none!important;
+  body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
+    > .rail-story:first-child::before {
+    width:65px;
+    font-size:clamp(36px,9vw,49px);
+    letter-spacing:-.075em;
   }
 }
