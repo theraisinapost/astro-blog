@@ -37,6 +37,16 @@ function rp_latest_transform(string $html): string {
         $updated=str_replace('</head>',
             '<link rel="stylesheet" href="/rp-home-dividers.css?v=20261118g">' . "\n</head>", $updated);
     }
+    /* Always-visible story titles + hover focus, limited to homepage rails. */
+    $updated = preg_replace(
+        '~(<link\b[^>]*href="/rp-home-card-focus\.css)(?:\?[^"]*)?("[^>]*>)~i',
+        '$1?v=20261118h$2', $updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise focus style URL');
+    if (!str_contains($updated, 'href="/rp-home-card-focus.css')) {
+        $updated=str_replace('</head>',
+            '<link rel="stylesheet" href="/rp-home-card-focus.css?v=20261118h">' . "\n</head>", $updated);
+    }
     return $updated;
 }
 if (in_array('--self-test', $argv, true)) {
@@ -47,6 +57,7 @@ if (in_array('--self-test', $argv, true)) {
     if ($once!==$twice || substr_count($twice,'src="/home-latest-auto.js')!==1 ||
         substr_count($twice,'href="/rp-home-daily-games.css')!==1 ||
         substr_count($twice,'href="/rp-home-dividers.css')!==1 ||
+        substr_count($twice,'href="/rp-home-card-focus.css')!==1 ||
         rp_latest_transform('<html><head></head><body>not homepage</body></html>')!==
             '<html><head></head><body>not homepage</body></html>') {
         fwrite(STDERR, "FAIL: idempotent homepage guard\n"); exit(1);
@@ -66,7 +77,8 @@ try {
     $filePairs=[[$scriptSource,$root.'/home-latest-auto.js',6000],[$styleSource,$root.'/rp-home-daily-games.css',2500],
       [$private.'/raisina-sudoku-art.webp',$root.'/images/raisina-sudoku-art.webp',3000],
       [$private.'/raisina-word-riddle-art.webp',$root.'/images/raisina-word-riddle-art.webp',3000],
-      [$private.'/rp-home-dividers-master.css',$root.'/rp-home-dividers.css',1200]];
+      [$private.'/rp-home-dividers-master.css',$root.'/rp-home-dividers.css',1200],
+      [$private.'/rp-home-card-focus-master.css',$root.'/rp-home-card-focus.css',2400]];
     foreach ($filePairs as [$source,$target,$minSize]) {
         if (!is_file($source) || filesize($source)<$minSize) throw new RuntimeException('Missing approved source '.basename($source));
         if (is_file($target) && sha1_file($target)===sha1_file($source)) continue;
