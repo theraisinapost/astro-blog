@@ -53,16 +53,17 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
 /* FULL PHOTO HEIGHT, NO BACKGROUND. Taller, lighter editorial lettering
  * almost touches the top and bottom of the photograph, with a very small
  * overlap by 25% of the LETTERING width into the photograph, with the other
- * 75% resting to its left. The lettering belongs to the card, not the viewport. */
+ * lettering visibly crossing the image boundary. It belongs to the card, not the viewport. */
 body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   > .rail-story:first-child::before {
   content:"NEWSROOM";
   position:absolute;
-  z-index:3;
+  z-index:9;
   box-sizing:border-box;
   inset-block:0;
-  /* Exactly 25% of the rotated masthead crosses the first card's left edge. */
-  left:calc(var(--rp-newsroom-letter-width) * -.75);
+  /* Position by visible glyphs, not the transparent box. A -75% offset
+     left almost all painted letters outside the photograph. Shift right. */
+  left:calc(var(--rp-newsroom-letter-width) * -.46);
   width:var(--rp-newsroom-letter-width);
   height:100%;
   display:flex;
@@ -92,7 +93,7 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   }
   body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
     > .rail-story:first-child::before {
-    left:calc(var(--rp-newsroom-letter-width) * -.75);
+    left:calc(var(--rp-newsroom-letter-width) * -.46);
     width:var(--rp-newsroom-letter-width);
     font-size:clamp(46px,11vw,60px);
     letter-spacing:-.08em;
