@@ -50,7 +50,7 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   position:relative;
   overflow:visible!important;
 }
-/* FULL PHOTO HEIGHT, NO BACKGROUND. Oversized bold condensed lettering
+/* FULL PHOTO HEIGHT, NO BACKGROUND. Taller, lighter editorial lettering
  * almost touches the top and bottom of the photograph, with a very small
  * overlap by 25% of the LETTERING width into the photograph, with the other
  * 75% resting to its left. The lettering belongs to the card, not the viewport. */
@@ -74,8 +74,8 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   box-shadow:none!important;
   border-radius:0!important;
   color:#111;
-  font:850 clamp(37px,4.55vw,62px)/.92 Inter,Manrope,Arial,sans-serif;
-  letter-spacing:-.055em;
+  font:600 clamp(51px,5.7vw,72px)/.98 Inter,Manrope,Arial,sans-serif;
+  letter-spacing:-.062em;
   text-transform:uppercase;
   white-space:nowrap;
   writing-mode:vertical-rl;
@@ -94,7 +94,7 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
     > .rail-story:first-child::before {
     left:calc(var(--rp-newsroom-letter-width) * -.75);
     width:var(--rp-newsroom-letter-width);
-    font-size:clamp(36px,9vw,49px);
-    letter-spacing:-.075em;
+    font-size:clamp(46px,11vw,60px);
+    letter-spacing:-.08em;
   }
 }
