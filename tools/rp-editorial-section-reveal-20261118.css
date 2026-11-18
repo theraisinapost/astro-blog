@@ -1,0 +1,39 @@
+/* The Raisina Post — quiet editorial chapter reveals, homepage only.
+ * No base-state hiding. Headlines and rules remain visible if JS is disabled.
+ * Animate only section labels + existing 1px rules; NEVER articles/images.
+ */
+@keyframes rpEditorialChapterIn {
+  from {opacity:.48;transform:translateY(4px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@keyframes rpEditorialRuleIn {
+  from {opacity:.1}
+  to {opacity:1}
+}
+body:has(.editorial-cover) main#main
+  > #home-crossover.rp-editorial-chapter-reveal > .section-bar,
+body:has(.editorial-cover) main#main
+  > #archive.rp-editorial-chapter-reveal > .section-bar,
+body:has(.editorial-cover) main#main
+  > #research-desk.rp-editorial-chapter-reveal > .home-tools-heading,
+body:has(.editorial-cover) main#main
+  > #research-desk.rp-editorial-chapter-reveal > .section-bar {
+  animation:rpEditorialChapterIn 280ms cubic-bezier(.2,.7,.2,1) both;
+}
+body:has(.editorial-cover) main#main
+  > #home-crossover.rp-editorial-chapter-reveal::before,
+body:has(.editorial-cover) main#main
+  > #archive.rp-editorial-chapter-reveal::before,
+body:has(.editorial-cover) main#main
+  > #research-desk.rp-editorial-chapter-reveal::before {
+  animation:rpEditorialRuleIn 300ms ease-out both;
+}
+@media(prefers-reduced-motion:reduce) {
+  body:has(.editorial-cover) main#main > #home-crossover.rp-editorial-chapter-reveal > .section-bar,
+  body:has(.editorial-cover) main#main > #archive.rp-editorial-chapter-reveal > .section-bar,
+  body:has(.editorial-cover) main#main > #research-desk.rp-editorial-chapter-reveal > .home-tools-heading,
+  body:has(.editorial-cover) main#main > #research-desk.rp-editorial-chapter-reveal > .section-bar,
+  body:has(.editorial-cover) main#main > #home-crossover.rp-editorial-chapter-reveal::before,
+  body:has(.editorial-cover) main#main > #archive.rp-editorial-chapter-reveal::before,
+  body:has(.editorial-cover) main#main > #research-desk.rp-editorial-chapter-reveal::before {animation:none!important;}
+}
