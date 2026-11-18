@@ -1,0 +1,74 @@
+/* The Raisina Post — card focus mode (homepage only).
+   Default: every photo card reveals its metadata, headline and article deck.
+   Desktop pointer hover / keyboard focus: keep the selected card's overlay,
+   fade text on its siblings only (in the same editorial rail).
+   Mobile & touch: every card remains readable, no hover-dependent hiding.
+*/
+body:has(.editorial-cover) main#main .frontpage.editorial-cover .home-mini-rail
+  .rail-story--illustrated .rail-copy,
+body:has(.editorial-cover) main#main .power-brief-slider .article-row .article-main {
+  opacity:1!important;
+  transform:none!important;
+}
+
+/* The existing rail stylesheet hides the dek with display:none!important.
+   Restore a restrained two-line description without changing card geometry. */
+body:has(.editorial-cover) main#main .frontpage.editorial-cover .home-mini-rail
+  .rail-story--illustrated .rail-copy > p {
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  overflow:hidden;
+  margin:9px 0 0;
+  color:rgba(255,255,255,.87)!important;
+  font:400 12px/1.48 Inter,Arial,sans-serif;
+  text-wrap:pretty;
+}
+body:has(.editorial-cover) main#main .power-brief-slider .article-row .article-main > p {
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  overflow:hidden;
+  margin:9px 0 0;
+  color:rgba(255,255,255,.87)!important;
+  font:400 12px/1.48 Inter,Arial,sans-serif;
+  text-wrap:pretty;
+}
+
+/* Focus mode only on devices that really support hover.
+   The photographic cards and their click targets remain intact. */
+@media (hover:hover) and (pointer:fine) {
+  body:has(.editorial-cover) main#main .frontpage.editorial-cover
+    .home-mini-rail:has(> .rail-story--illustrated:is(:hover,:focus-within))
+    > .rail-story--illustrated:not(:is(:hover,:focus-within)) .rail-copy {
+    opacity:0!important;
+    transform:translateY(5px)!important;
+  }
+  body:has(.editorial-cover) main#main .power-brief-slider
+    .article-list:has(> .article-row:is(:hover,:focus-within))
+    > .article-row:not(:is(:hover,:focus-within)) .article-main {
+    opacity:0!important;
+    transform:translateY(5px)!important;
+  }
+}
+/* Keyboard-only navigation should also reveal the focused item and dim its
+   siblings on laptops with mouse/trackpad; touch-only users see everything. */
+@media (hover:none), (pointer:coarse) {
+  body:has(.editorial-cover) main#main .frontpage.editorial-cover
+    .home-mini-rail .rail-story--illustrated .rail-copy,
+  body:has(.editorial-cover) main#main .power-brief-slider
+    .article-list .article-row .article-main {
+    opacity:1!important;
+    transform:none!important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body:has(.editorial-cover) main#main .frontpage.editorial-cover
+    .home-mini-rail .rail-story--illustrated .rail-copy,
+  body:has(.editorial-cover) main#main .power-brief-slider
+    .article-list .article-row .article-main {
+    transition:none!important;
+  }
+}
