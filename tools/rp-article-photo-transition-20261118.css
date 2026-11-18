@@ -1,33 +1,65 @@
-/* The Raisina Post — native cross-document article-cover transition.
- * An opt-in browser enhancement: ordinary links and loads work unchanged.
- * Applied only on homepage and canonical article pages by deployment guards.
+/* The Raisina Post — editorial shared-cover transition, version 20261118s.
+ * Pure progressive enhancement: native same-origin document navigation.
  */
-@view-transition { navigation:auto; }
+@view-transition { navigation: auto; }
 
-@keyframes rpCoverFadeOut {from{opacity:1}to{opacity:0}}
-@keyframes rpCoverFadeIn {from{opacity:0}to{opacity:1}}
-
+@keyframes rpPageLeave {
+  from { opacity:1; transform:translateY(0) scale(1); }
+  to { opacity:.62; transform:translateY(-9px) scale(.995); }
+}
+@keyframes rpPageArrive {
+  from { opacity:0; transform:translateY(20px) scale(.992); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes rpTitleDepart {
+  from { opacity:1; }
+  to { opacity:0; }
+}
+@keyframes rpTitleArrive {
+  from { opacity:0; }
+  to { opacity:1; }
+}
 ::view-transition-old(root) {
-  animation:130ms ease-out both rpCoverFadeOut;
+  animation: 260ms cubic-bezier(.22,.7,.2,1) both rpPageLeave;
 }
 ::view-transition-new(root) {
-  animation:190ms ease-in both rpCoverFadeIn;
+  animation: 390ms cubic-bezier(.16,1,.3,1) both rpPageArrive;
 }
 ::view-transition-group(rp-story-cover) {
-  animation-duration:300ms;
-  animation-timing-function:cubic-bezier(.22,.7,.2,1);
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(.18,.82,.18,1);
+  overflow: clip;
+}
+::view-transition-image-pair(rp-story-cover) {
+  isolation: isolate;
 }
 ::view-transition-old(rp-story-cover),
 ::view-transition-new(rp-story-cover) {
-  object-fit:cover;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
-@media(prefers-reduced-motion:reduce) {
+::view-transition-group(rp-story-title) {
+  animation-duration: 470ms;
+  animation-timing-function: cubic-bezier(.2,.72,.22,1);
+}
+::view-transition-old(rp-story-title) {
+  animation: 180ms ease-out both rpTitleDepart;
+}
+::view-transition-new(rp-story-title) {
+  animation: 350ms 110ms ease-out both rpTitleArrive;
+}
+@media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root),
+  ::view-transition-group(rp-story-cover),
   ::view-transition-old(rp-story-cover),
   ::view-transition-new(rp-story-cover),
-  ::view-transition-group(rp-story-cover) {
-    animation-duration:0.01ms!important;
-    animation-delay:0ms!important;
+  ::view-transition-group(rp-story-title),
+  ::view-transition-old(rp-story-title),
+  ::view-transition-new(rp-story-title) {
+    animation: none !important;
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
   }
 }
