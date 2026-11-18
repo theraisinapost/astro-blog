@@ -38,8 +38,8 @@ body:has(.editorial-cover) main#main #latest .home-secondary-heading > span {
  * of the actual horizontal scroll area; it scrolls off with the article. */
 body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail {
   box-sizing:border-box!important;
-  padding-left:var(--rp-newsroom-letter-width)!important;
-  scroll-padding-inline-start:var(--rp-newsroom-letter-width);
+  padding-left:calc(var(--rp-newsroom-letter-width) * .75)!important;
+  scroll-padding-inline-start:calc(var(--rp-newsroom-letter-width) * .75);
   overflow-x:auto;
   overflow-y:hidden;
 }
@@ -52,7 +52,8 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
 }
 /* FULL PHOTO HEIGHT, NO BACKGROUND. Oversized bold condensed lettering
  * almost touches the top and bottom of the photograph, with a very small
- * overlap over 25% of the first card. This belongs to the card, not the viewport. */
+ * overlap by 25% of the LETTERING width into the photograph, with the other
+ * 75% resting to its left. The lettering belongs to the card, not the viewport. */
 body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   > .rail-story:first-child::before {
   content:"NEWSROOM";
@@ -60,8 +61,8 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   z-index:3;
   box-sizing:border-box;
   inset-block:0;
-  /* Its right edge reaches one quarter of the first card's width. */
-  left:calc(25% - var(--rp-newsroom-letter-width));
+  /* Exactly 25% of the rotated masthead crosses the first card's left edge. */
+  left:calc(var(--rp-newsroom-letter-width) * -.75);
   width:var(--rp-newsroom-letter-width);
   height:100%;
   display:flex;
@@ -91,8 +92,8 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   }
   body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
     > .rail-story:first-child::before {
-    left:calc(25% - 65px);
-    width:65px;
+    left:calc(var(--rp-newsroom-letter-width) * -.75);
+    width:var(--rp-newsroom-letter-width);
     font-size:clamp(36px,9vw,49px);
     letter-spacing:-.075em;
   }
