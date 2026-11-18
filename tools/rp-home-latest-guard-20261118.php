@@ -121,6 +121,31 @@ function rp_latest_transform(string $html): string {
     }
     return $updated;
 }
+
+/* Shared-cover transition links are also restored to article documents.
+ * Conservative: only canonical sections and only <main class="ra-article">.
+ */
+function rp_article_transition_markup(string $html): string {
+    if (strlen($html)<600 || !str_contains($html,'</head>') ||
+        !preg_match('~<main\b[^>]*class="[^"]*\bra-article\b~i',$html)) return $html;
+    foreach ([
+        ['link','href','rp-article-photo-transition.css',
+           '<link rel="stylesheet" href="/rp-article-photo-transition.css?v=20261118r">'],
+        ['script','src','rp-article-photo-transition.js',
+           '<script src="/rp-article-photo-transition.js?v=20261118r"></script>']
+    ] as [$tag,$attr,$file,$tagMarkup]) {
+        $pattern='~(<'.$tag.'\b[^>]*'.$attr.'="/'.preg_quote($file,'~').
+            ')(?:\?[^"]*)?("[^>]*>)~i';
+        $next=preg_replace($pattern,'$1?v=20261118r$2',$html);
+        if (!is_string($next)) throw new RuntimeException('Invalid article transition link');
+        $html=$next;
+        if (!str_contains($html,$attr.'="/'.$file)) {
+            $html=str_replace('</head>',$tagMarkup."\n</head>",$html);
+        }
+    }
+    return $html;
+}
+
 if (in_array('--self-test', $argv, true)) {
     $html='<html><head></head><body><aside><div id="home-24h-grid"></div><section id="rp-home-daily-games"></section></aside><div class="home-secondary-heading"><h3 id="section-more-reporting">Across the newsroom</h3></div></body></html>';
     $html=str_replace('</body>',str_repeat('x',600).'</body>',$html);
@@ -142,6 +167,15 @@ if (in_array('--self-test', $argv, true)) {
         rp_latest_transform('<html><head></head><body>not homepage</body></html>')!==
             '<html><head></head><body>not homepage</body></html>') {
         fwrite(STDERR, "FAIL: idempotent homepage guard\n"); exit(1);
+    }
+    $sample='<!doctype html><html><head></head><body><main class="ra-article">'.str_repeat('<p>reporting</p>',50).'</main></body></html>';
+    $articleOnce=rp_article_transition_markup($sample);
+    if ($articleOnce!==rp_article_transition_markup($articleOnce) ||
+        substr_count($articleOnce,'src="/rp-article-photo-transition.js')!==1 ||
+        substr_count($articleOnce,'href="/rp-article-photo-transition.css')!==1 ||
+        rp_article_transition_markup('<html><head></head><body>no article</body></html>')!==
+          '<html><head></head><body>no article</body></html>') {
+        fwrite(STDERR,"FAIL: article transition links\n");exit(1);
     }
     echo "PASS: guard is idempotent and homepage-scoped\n";
     exit(0);
@@ -188,6 +222,36 @@ try {
         echo "HOMEPAGE_GUARDED script=on games=".(str_contains($after,'id="rp-home-daily-games"')?'on':'missing')."\n";
     } else {
         echo "OK: homepage feature loaders already current\n";
+    }
+    /* Cheap five-minute pass: new/rebuilt articles get their two head links.
+     * The site's existing every-minute guard is already verified working. */
+    $scanStamp=$private.'/rp-article-photo-transitions-last-scan.stamp';
+    $prevScan=is_file($scanStamp)?(int)filemtime($scanStamp):0;
+    if (is_file($root.'/rp-article-photo-transition.js') &&
+        is_file($root.'/rp-article-photo-transition.css') &&
+        time()-$prevScan>=240) {
+        $articleScanned=0;$articlePatched=0;$articleErrors=0;
+        foreach (['business','governance','in-depth','opinion'] as $section) {
+            foreach (glob($root.'/'.$section.'/*/index.html') ?: [] as $articlePath) {
+                if (!is_file($articlePath) || is_link($articlePath)) continue;
+                $size=filesize($articlePath);
+                if (!is_int($size) || $size<12000 || $size>2500000) continue;
+                $articleScanned++;
+                $beforeArticle=file_get_contents($articlePath);
+                if (!is_string($beforeArticle)) {$articleErrors++;continue;}
+                $afterArticle=rp_article_transition_markup($beforeArticle);
+                if ($afterArticle===$beforeArticle) continue;
+                $temporaryArticle=$articlePath.'.rp-photo-guard.tmp';
+                if (file_put_contents($temporaryArticle,$afterArticle,LOCK_EX)!==strlen($afterArticle) ||
+                    !rename($temporaryArticle,$articlePath)) {
+                    @unlink($temporaryArticle);$articleErrors++;continue;
+                }
+                $articlePatched++;
+            }
+        }
+        if ($articleErrors===0) touch($scanStamp);
+        echo "PHOTO_TRANSITIONS scanned=$articleScanned updated=$articlePatched errors=$articleErrors\n";
+        if ($articleErrors) exit(1);
     }
 } catch(Throwable $error) {
     fwrite(STDERR,"GUARD_ERROR: ".$error->getMessage()."\n");exit(1);
