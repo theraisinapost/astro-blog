@@ -54,7 +54,7 @@
   function card(story,kind){
     const cls=kind==="support"?"rpv-support":kind==="reading"?"rpv-reading":"rpv-article";
     const img=kind==="support"?"":imageFor(story);
-    const body='<span class="rpv-storybody"><span class="rpv-headline">'+escape(story.title)+'</span>'+(story.description?'<span class="rpv-deck">'+escape(story.description)+'</span>':"")+'</span>';
+    const body='<span class="rpv-storybody"><h3 class="rpv-headline">'+escape(story.title)+'</h3>'+(story.description?'<span class="rpv-deck">'+escape(story.description)+'</span>':"")+'</span>';
     return '<a class="'+cls+'" href="'+escape(story.href)+'">'+img+body+'</a>';
   }
   function getStories(source){
@@ -98,7 +98,7 @@
     // Never leave a desk empty when its only article was promoted to the main lead.
     for(const k of Object.keys(desks))if(!desks[k].length)desks[k]=all.filter(x=>x.cat===k).slice(0,k==="business"||k==="governance"?3:1);
     const hero=home.querySelector("#rpv-lead");
-    if(hero)hero.innerHTML='<a class="rpv-hero" href="'+escape(lead.href)+'">'+imageFor(lead)+'<span class="rpv-hero-copy"><span class="rpv-hero-title">'+escape(lead.title)+'</span><span class="rpv-hero-deck">'+escape(lead.description)+'</span></span></a><div class="rpv-supports">'+support.map(x=>card(x,"support")).join("")+'</div>';
+    if(hero)hero.innerHTML='<a class="rpv-hero" href="'+escape(lead.href)+'">'+imageFor(lead)+'<span class="rpv-hero-copy"><h1 class="rpv-hero-title">'+escape(lead.title)+'</h1><p class="rpv-hero-deck">'+escape(lead.description)+'</p></span></a><div class="rpv-supports">'+support.map(x=>card(x,"support")).join("")+'</div>';
     [["business","#rpv-business"],["governance","#rpv-governance"]].forEach(([k,sel])=>{
       const el=home.querySelector(sel);if(el)el.innerHTML=desks[k].map(x=>card(x,"article")).join("");
     });
