@@ -1,6 +1,8 @@
 (function raisinaFrontPageV4(){
   "use strict";
   if (location.pathname !== "/" && location.pathname !== "/index.html") return;
+  if(!document.querySelector("link[data-rp-home-v4-style]")){const style=document.createElement("link");style.rel="stylesheet";style.href="/rp-home-v4.css?v=20261118b";style.setAttribute("data-rp-home-v4-style","");document.head.append(style);}
+
   const SELECTED = "#rp-home-v4";
   const FILE_ROOT = "/";
   const fallback = {
