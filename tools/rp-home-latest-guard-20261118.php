@@ -103,21 +103,21 @@ function rp_latest_transform(string $html): string {
     /* Native image-to-article navigation: both pages opt in, never intercept links. */
     $updated = preg_replace(
         '~(<link\b[^>]*href="/rp-article-photo-transition\.css)(?:\?[^"]*)?("[^>]*>)~i',
-        '$1?v=20261118r$2',$updated
+        '$1?v=20261118s$2',$updated
     );
     if (!is_string($updated)) throw new RuntimeException('Cannot normalise photo transition CSS');
     if (!str_contains($updated,'href="/rp-article-photo-transition.css')) {
         $updated=str_replace('</head>',
-            '<link rel="stylesheet" href="/rp-article-photo-transition.css?v=20261118r">' . "\n</head>",$updated);
+            '<link rel="stylesheet" href="/rp-article-photo-transition.css?v=20261118s">' . "\n</head>",$updated);
     }
     $updated = preg_replace(
         '~(<script\b[^>]*src="/rp-article-photo-transition\.js)(?:\?[^"]*)?("[^>]*></script>)~i',
-        '$1?v=20261118r$2',$updated
+        '$1?v=20261118s$2',$updated
     );
     if (!is_string($updated)) throw new RuntimeException('Cannot normalise photo transition JS');
     if (!str_contains($updated,'src="/rp-article-photo-transition.js')) {
         $updated=str_replace('</head>',
-            '<script src="/rp-article-photo-transition.js?v=20261118r"></script>' . "\n</head>",$updated);
+            '<script src="/rp-article-photo-transition.js?v=20261118s"></script>' . "\n</head>",$updated);
     }
     return $updated;
 }
@@ -130,13 +130,13 @@ function rp_article_transition_markup(string $html): string {
         !preg_match('~<main\b[^>]*class="[^"]*\bra-article\b~i',$html)) return $html;
     foreach ([
         ['link','href','rp-article-photo-transition.css',
-           '<link rel="stylesheet" href="/rp-article-photo-transition.css?v=20261118r">'],
+           '<link rel="stylesheet" href="/rp-article-photo-transition.css?v=20261118s">'],
         ['script','src','rp-article-photo-transition.js',
-           '<script src="/rp-article-photo-transition.js?v=20261118r"></script>']
+           '<script src="/rp-article-photo-transition.js?v=20261118s"></script>']
     ] as [$tag,$attr,$file,$tagMarkup]) {
         $pattern='~(<'.$tag.'\b[^>]*'.$attr.'="/'.preg_quote($file,'~').
             ')(?:\?[^"]*)?("[^>]*>)~i';
-        $next=preg_replace($pattern,'$1?v=20261118r$2',$html);
+        $next=preg_replace($pattern,'$1?v=20261118s$2',$html);
         if (!is_string($next)) throw new RuntimeException('Invalid article transition link');
         $html=$next;
         if (!str_contains($html,$attr.'="/'.$file)) {
@@ -144,6 +144,204 @@ function rp_article_transition_markup(string $html): string {
         }
     }
     return $html;
+}
+
+/* Approved transition assets travel with this existing guard so Hostinger can
+ * install them without a full-site redeploy or an additional cron job. */
+function rp_transition_asset_payloads(): array {
+    return [
+        'rp-article-photo-transition-master.css' => <<<'RP_CSS'
+/* The Raisina Post — editorial shared-cover transition, version 20261118s.
+ * Pure progressive enhancement: native same-origin document navigation.
+ */
+@view-transition { navigation: auto; }
+
+@keyframes rpPageLeave {
+  from { opacity:1; transform:translateY(0) scale(1); }
+  to { opacity:.62; transform:translateY(-9px) scale(.995); }
+}
+@keyframes rpPageArrive {
+  from { opacity:0; transform:translateY(20px) scale(.992); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes rpTitleDepart {
+  from { opacity:1; }
+  to { opacity:0; }
+}
+@keyframes rpTitleArrive {
+  from { opacity:0; }
+  to { opacity:1; }
+}
+::view-transition-old(root) {
+  animation: 260ms cubic-bezier(.22,.7,.2,1) both rpPageLeave;
+}
+::view-transition-new(root) {
+  animation: 390ms cubic-bezier(.16,1,.3,1) both rpPageArrive;
+}
+::view-transition-group(rp-story-cover) {
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(.18,.82,.18,1);
+  overflow: clip;
+}
+::view-transition-image-pair(rp-story-cover) {
+  isolation: isolate;
+}
+::view-transition-old(rp-story-cover),
+::view-transition-new(rp-story-cover) {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+::view-transition-group(rp-story-title) {
+  animation-duration: 470ms;
+  animation-timing-function: cubic-bezier(.2,.72,.22,1);
+}
+::view-transition-old(rp-story-title) {
+  animation: 180ms ease-out both rpTitleDepart;
+}
+::view-transition-new(rp-story-title) {
+  animation: 350ms 110ms ease-out both rpTitleArrive;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(rp-story-cover),
+  ::view-transition-old(rp-story-cover),
+  ::view-transition-new(rp-story-cover),
+  ::view-transition-group(rp-story-title),
+  ::view-transition-old(rp-story-title),
+  ::view-transition-new(rp-story-title) {
+    animation: none !important;
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+RP_CSS,
+        'rp-article-photo-transition-master.js' => <<<'RP_JS'
+/* The Raisina Post — cinematic shared-cover and headline navigation, 20261118s.
+ * Same-origin native View Transitions; no click interception or loading screens.
+ * Select media by its actual article link instead of depending on card classes.
+ */
+(() => {
+  'use strict';
+  const ARTICLE_RE = /^\/(?:business|governance|in-depth|opinion)\/[a-z0-9]+(?:-[a-z0-9]+)*\/?$/;
+  const COVER = 'rp-story-cover';
+  const TITLE = 'rp-story-title';
+  const reduced = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const canonical = value => {
+    try {
+      const url = new URL(value, document.baseURI);
+      if (url.origin !== location.origin) return null;
+      const path = url.pathname.replace(/\/+$/, '') || '/';
+      return path;
+    } catch (_) { return null; }
+  };
+  const article = path => typeof path === 'string' && ARTICLE_RE.test(path);
+  const home = path => path === '/';
+  const homepageLinks = () => document.querySelectorAll('main a[href]');
+  const homeMedia = path => {
+    // The image may be wrapped by its own anchor, separate from the headline.
+    let storyLink = null;
+    for (const link of homepageLinks()) {
+      if (canonical(link.getAttribute('href')) !== path) continue;
+      storyLink ||= link;
+      const ownImage = link.querySelector('img');
+      if (ownImage) return ownImage;
+      const card = link.closest('.rail-story, .article-row, .story-card, .news-card, .feature-card, article');
+      const cardImage = card?.querySelector('picture img, figure img, img');
+      if (cardImage) return cardImage;
+    }
+    // Nonstandard cards: find an adjacent photo without assigning unrelated images.
+    return storyLink?.parentElement?.querySelector('picture img, figure img') || null;
+  };
+  const homeTitle = path => {
+    for (const link of homepageLinks()) {
+      if (canonical(link.getAttribute('href')) !== path) continue;
+      const heading = link.closest('h1, h2, h3, h4');
+      if (heading) return heading;
+    }
+    return null;
+  };
+  const articleMedia = () => document.querySelector(
+    'main.ra-article .ra-cover-frame img,' +
+    'main.ra-article figure.ra-cover img,' +
+    'main.ra-article .article-hero img,' +
+    'main.ra-article .article-cover img,' +
+    'main.ra-article figure img,' +
+    'main.ra-article header img,' +
+    'main.ra-article img'
+  );
+  const articleTitle = () => document.querySelector('main.ra-article h1');
+  const stamp = (node, name) => {
+    if (node?.isConnected) node.style.viewTransitionName = name;
+  };
+  const clear = (node, name) => {
+    if (node?.style.viewTransitionName === name) node.style.removeProperty('view-transition-name');
+  };
+  const cleanup = nodes => {
+    clear(nodes.cover, COVER);
+    clear(nodes.title, TITLE);
+  };
+  const nodesForHome = path => ({ cover: homeMedia(path), title: homeTitle(path) });
+  const nodesForArticle = () => ({ cover: articleMedia(), title: articleTitle() });
+  const mark = nodes => {
+    stamp(nodes.cover, COVER);
+    stamp(nodes.title, TITLE);
+  };
+  let requested = null;
+  let lastNodes = null;
+
+  document.addEventListener('click', event => {
+    if (reduced() || event.defaultPrevented || event.button !== 0 ||
+        event.metaKey || event.ctrlKey || event.shiftKey || event.altKey ||
+        !home(canonical(location.href))) return;
+    const link = event.target?.closest?.('a[href]');
+    if (!link || (link.target && link.target !== '_self') || link.hasAttribute('download')) return;
+    const destination = canonical(link.getAttribute('href'));
+    requested = article(destination) ? destination : null;
+  }, { capture: true });
+
+  window.addEventListener('pageswap', event => {
+    if (!event.viewTransition || reduced()) return;
+    const destination = canonical(event.activation?.to?.url);
+    const path = canonical(location.href);
+    let nodes = null;
+    if (home(path) && article(destination)) {
+      // A shared photo is eligible only on an actual article navigation.
+      if (requested === destination) nodes = nodesForHome(destination);
+    } else if (article(path) && home(destination)) {
+      nodes = nodesForArticle();
+    }
+    if (!nodes) return;
+    mark(nodes);
+    lastNodes = nodes;
+    event.viewTransition.finished.then(() => cleanup(nodes), () => cleanup(nodes));
+  });
+
+  window.addEventListener('pagereveal', event => {
+    if (!event.viewTransition || reduced()) return;
+    // A same-origin referrer is a fallback when Navigation.activation is absent.
+    const source = canonical(window.navigation?.activation?.from?.url) ||
+                   canonical(document.referrer);
+    const path = canonical(location.href);
+    let nodes = null;
+    if (article(path) && home(source)) nodes = nodesForArticle();
+    else if (home(path) && article(source)) nodes = nodesForHome(source);
+    if (!nodes) return;
+    mark(nodes);
+    lastNodes = nodes;
+    event.viewTransition.finished.then(() => cleanup(nodes), () => cleanup(nodes));
+  });
+
+  window.addEventListener('pageshow', event => {
+    if (!event.persisted) return;
+    if (lastNodes) cleanup(lastNodes);
+    lastNodes = null;
+    requested = null;
+  });
+})();
+RP_JS,
+    ];
 }
 
 if (in_array('--self-test', $argv, true)) {
@@ -177,6 +375,12 @@ if (in_array('--self-test', $argv, true)) {
           '<html><head></head><body>no article</body></html>') {
         fwrite(STDERR,"FAIL: article transition links\n");exit(1);
     }
+    $photoPayloads=rp_transition_asset_payloads();
+    if (!str_contains($photoPayloads['rp-article-photo-transition-master.js'],'main a[href]') ||
+        !str_contains($photoPayloads['rp-article-photo-transition-master.js'],'rp-story-title') ||
+        !str_contains($photoPayloads['rp-article-photo-transition-master.css'],'560ms')) {
+        fwrite(STDERR,"FAIL: approved cinematic transition payloads".PHP_EOL);exit(1);
+    }
     echo "PASS: guard is idempotent and homepage-scoped\n";
     exit(0);
 }
@@ -189,6 +393,18 @@ try {
     $styleSource=$private.'/rp-home-daily-games-master.css';
     $index=$root.'/index.html';
     if (!is_file($index) || filesize($index)<25000) throw new RuntimeException('Unexpected missing/short homepage');
+    $photoAssetsChanged=0;
+    foreach (rp_transition_asset_payloads() as $approvedFilename => $bytes) {
+        $master=$private.'/'.$approvedFilename;
+        if (is_file($master) && hash_file('sha256',$master)===hash('sha256',$bytes)) continue;
+        $temp=$master.'.rp-photo-upgrade.tmp';
+        if (file_put_contents($temp,$bytes,LOCK_EX)!==strlen($bytes) || !rename($temp,$master)) {
+            @unlink($temp);
+            throw new RuntimeException('Could not install approved transition asset '.basename($master));
+        }
+        $photoAssetsChanged++;
+    }
+    if ($photoAssetsChanged) echo "PHOTO_TRANSITION_ASSETS version=s refreshed=$photoAssetsChanged".PHP_EOL;
     $filePairs=[[$scriptSource,$root.'/home-latest-auto.js',6000],[$styleSource,$root.'/rp-home-daily-games.css',2500],
       [$private.'/raisina-sudoku-art.webp',$root.'/images/raisina-sudoku-art.webp',3000],
       [$private.'/raisina-word-riddle-art.webp',$root.'/images/raisina-word-riddle-art.webp',3000],
