@@ -34,3 +34,14 @@ body:has(.editorial-cover) #latest .home-24h--hero #rp-home-daily-games {
     max-height:min(430px,calc(100dvh - 260px));
   }
 }
+
+/* Two latest editions require normal page scrolling, never a nested viewport. */
+@media (min-width:761px) {
+  body:has(.editorial-cover) #latest .home-24h--hero .home-24h-grid {
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    scroll-snap-type:none!important;
+  }
+  body:has(.editorial-cover) #latest .home-24h--hero .home-24h-scroll-buttons {display:none!important}
+}
