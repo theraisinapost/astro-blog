@@ -27,6 +27,16 @@ function rp_latest_transform(string $html): string {
             $updated=str_replace('</head>', '<link rel="stylesheet" href="/rp-home-daily-games.css?v=20261118f">' . "\n</head>", $updated);
         }
     }
+    /* Hairline section rules on the homepage only; one link through rebuilds. */
+    $updated = preg_replace(
+        '~(<link\\b[^>]*href="/rp-home-dividers\\.css)(?:\\?[^"]*)?("[^>]*>)~i',
+        '$1?v=20261118g$2', $updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise divider style URL');
+    if (!str_contains($updated, 'href="/rp-home-dividers.css')) {
+        $updated=str_replace('</head>',
+            '<link rel="stylesheet" href="/rp-home-dividers.css?v=20261118g">' . "\n</head>", $updated);
+    }
     return $updated;
 }
 if (in_array('--self-test', $argv, true)) {
@@ -36,6 +46,7 @@ if (in_array('--self-test', $argv, true)) {
     $twice=rp_latest_transform($once);
     if ($once!==$twice || substr_count($twice,'src="/home-latest-auto.js')!==1 ||
         substr_count($twice,'href="/rp-home-daily-games.css')!==1 ||
+        substr_count($twice,'href="/rp-home-dividers.css')!==1 ||
         rp_latest_transform('<html><head></head><body>not homepage</body></html>')!==
             '<html><head></head><body>not homepage</body></html>') {
         fwrite(STDERR, "FAIL: idempotent homepage guard\n"); exit(1);
@@ -54,7 +65,8 @@ try {
     if (!is_file($index) || filesize($index)<25000) throw new RuntimeException('Unexpected missing/short homepage');
     $filePairs=[[$scriptSource,$root.'/home-latest-auto.js',6000],[$styleSource,$root.'/rp-home-daily-games.css',2500],
       [$private.'/raisina-sudoku-art.webp',$root.'/images/raisina-sudoku-art.webp',3000],
-      [$private.'/raisina-word-riddle-art.webp',$root.'/images/raisina-word-riddle-art.webp',3000]];
+      [$private.'/raisina-word-riddle-art.webp',$root.'/images/raisina-word-riddle-art.webp',3000],
+      [$private.'/rp-home-dividers-master.css',$root.'/rp-home-dividers.css',1200]];
     foreach ($filePairs as [$source,$target,$minSize]) {
         if (!is_file($source) || filesize($source)<$minSize) throw new RuntimeException('Missing approved source '.basename($source));
         if (is_file($target) && sha1_file($target)===sha1_file($source)) continue;
