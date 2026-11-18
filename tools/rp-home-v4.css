@@ -38,7 +38,7 @@
 #rp-home-v4 .rpv-side-head h2{font-size:20px;font-weight:750;letter-spacing:-.028em}
 #rp-home-v4 .rpv-side-head>a{font-size:11px;color:var(--rpv-muted);white-space:nowrap}
 #rp-home-v4 .rpv-hour-controls{display:flex;gap:21px;margin:5px 0 14px}
-#rp-home-v4 .rpv-hour-tab{font:600 11px/1.3 inherit;border:0;padding:6px 0;background:transparent;color:#84888b;cursor:pointer}
+#rp-home-v4 .rpv-hour-tab{font-family:inherit;font-size:11px;font-weight:600;line-height:1.3;border:0;padding:6px 0;background:transparent;color:#84888b;cursor:pointer}
 #rp-home-v4 .rpv-hour-tab[aria-selected=true]{color:var(--rpv-ink);font-weight:800}
 #rp-home-v4 .rpv-edition{display:block;padding:13px 0}
 #rp-home-v4 .rpv-edition:not(:first-child){border-top:1px solid #f0f1f2}
