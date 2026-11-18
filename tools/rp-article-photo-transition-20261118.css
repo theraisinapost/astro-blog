@@ -63,3 +63,9 @@
     animation-delay: 0ms !important;
   }
 }
+
+html.rp-photo-arriving main.ra-article .ra-cover-frame img,
+html.rp-photo-arriving main.ra-article figure.ra-cover img,
+html.rp-photo-arriving main.ra-article .article-hero img,
+html.rp-photo-arriving main.ra-article .article-cover img,
+html.rp-photo-arriving figure.ra-cover img {visibility:hidden!important;}
