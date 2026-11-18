@@ -81,6 +81,25 @@ function rp_latest_transform(string $html): string {
         $updated=str_replace('</head>',
             '<script defer src="/rp-newsroom-rail-ux.js?v=20261118p"></script>' . "\n</head>",$updated);
     }
+    /* One-time section-heading + hairline entrance; never affect stories. */
+    $updated = preg_replace(
+        '~(<link\b[^>]*href="/rp-editorial-section-reveal\.css)(?:\?[^"]*)?("[^>]*>)~i',
+        '$1?v=20261118q$2',$updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise editorial section CSS');
+    if (!str_contains($updated,'href="/rp-editorial-section-reveal.css')) {
+        $updated=str_replace('</head>',
+            '<link rel="stylesheet" href="/rp-editorial-section-reveal.css?v=20261118q">' . "\n</head>",$updated);
+    }
+    $updated = preg_replace(
+        '~(<script\b[^>]*src="/rp-editorial-section-reveal\.js)(?:\?[^"]*)?("[^>]*></script>)~i',
+        '$1?v=20261118q$2',$updated
+    );
+    if (!is_string($updated)) throw new RuntimeException('Cannot normalise editorial section JS');
+    if (!str_contains($updated,'src="/rp-editorial-section-reveal.js')) {
+        $updated=str_replace('</head>',
+            '<script defer src="/rp-editorial-section-reveal.js?v=20261118q"></script>' . "\n</head>",$updated);
+    }
     return $updated;
 }
 if (in_array('--self-test', $argv, true)) {
@@ -95,6 +114,8 @@ if (in_array('--self-test', $argv, true)) {
         substr_count($twice,'href="/rp-home-newsroom-vertical.css')!==1 ||
         substr_count($twice,'href="/rp-newsroom-rail-ux.css')!==1 ||
         substr_count($twice,'src="/rp-newsroom-rail-ux.js')!==1 ||
+        substr_count($twice,'href="/rp-editorial-section-reveal.css')!==1 ||
+        substr_count($twice,'src="/rp-editorial-section-reveal.js')!==1 ||
         substr_count($twice,'id="section-more-reporting">Newsroom</h3>')!==1 ||
         str_contains($twice,'>Across the newsroom</h3>') ||
         rp_latest_transform('<html><head></head><body>not homepage</body></html>')!==
@@ -120,7 +141,9 @@ try {
       [$private.'/rp-home-card-focus-master.css',$root.'/rp-home-card-focus.css',2400],
       [$private.'/rp-home-newsroom-vertical-master.css',$root.'/rp-home-newsroom-vertical.css',2200],
       [$private.'/rp-newsroom-rail-ux-master.css',$root.'/rp-newsroom-rail-ux.css',1400],
-      [$private.'/rp-newsroom-rail-ux-master.js',$root.'/rp-newsroom-rail-ux.js',2500]];
+      [$private.'/rp-newsroom-rail-ux-master.js',$root.'/rp-newsroom-rail-ux.js',2500],
+      [$private.'/rp-editorial-section-reveal-master.css',$root.'/rp-editorial-section-reveal.css',1700],
+      [$private.'/rp-editorial-section-reveal-master.js',$root.'/rp-editorial-section-reveal.js',1000]];
     foreach ($filePairs as [$source,$target,$minSize]) {
         if (!is_file($source) || filesize($source)<$minSize) throw new RuntimeException('Missing approved source '.basename($source));
         if (is_file($target) && sha1_file($target)===sha1_file($source)) continue;
