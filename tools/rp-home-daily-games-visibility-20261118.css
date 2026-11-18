@@ -1,0 +1,36 @@
+/* Games of the Day — homepage sidebar only; retains existing game SVG symbols. */
+body:has(.editorial-cover) #latest .home-24h--hero .rp-home-daily-games{margin-top:26px;padding-top:22px;border-top:1px solid #e9e9e9;min-width:0;font-family:Manrope,Inter,Arial,sans-serif}
+body:has(.editorial-cover) #latest .rp-home-daily-games-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:15px}
+body:has(.editorial-cover) #latest .rp-home-daily-games-head h2{font:650 clamp(17px,1.28vw,19px)/1.35 Manrope,Inter,Arial,sans-serif;letter-spacing:-.03em;color:#242424;margin:0}
+body:has(.editorial-cover) #latest .rp-home-daily-games-head a{font:500 11px/1.5 Manrope,Inter,Arial,sans-serif;color:#656565;text-decoration:none;white-space:nowrap}
+body:has(.editorial-cover) #latest .rp-home-daily-games-head a:hover{color:#a32331}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list{display:grid;gap:9px}
+body:has(.editorial-cover) #latest .rp-home-daily-game{display:flex;align-items:center;gap:13px;min-width:0;min-height:68px;padding:11px 13px;background:#f9f9f9;border-radius:8px;border:0;text-decoration:none;color:#222;transition:background .16s ease}
+body:has(.editorial-cover) #latest .rp-home-daily-game:hover{background:#f1f1f1}
+body:has(.editorial-cover) #latest .rp-home-daily-game:focus-visible{outline:2px solid #a32331;outline-offset:3px}
+body:has(.editorial-cover) #latest .rp-home-daily-game-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:7px;background:#191919}
+body:has(.editorial-cover) #latest .rp-home-daily-game-icon svg{display:block;width:31px;height:31px;overflow:visible}
+body:has(.editorial-cover) #latest .rp-home-daily-game--featured{padding:15px 14px;min-height:88px}
+body:has(.editorial-cover) #latest .rp-home-daily-game--featured .rp-home-daily-game-icon{flex-basis:58px;width:58px;height:58px}
+body:has(.editorial-cover) #latest .rp-home-daily-game--featured .rp-home-daily-game-icon svg{width:39px;height:39px}
+body:has(.editorial-cover) #latest .rp-home-daily-game-copy{display:block;flex:1;min-width:0}
+body:has(.editorial-cover) #latest .rp-home-daily-game-copy strong{display:block;font:650 14px/1.36 Manrope,Inter,Arial,sans-serif;letter-spacing:-.02em;color:#242424;overflow-wrap:break-word}
+body:has(.editorial-cover) #latest .rp-home-daily-game--featured .rp-home-daily-game-copy strong{font-size:16px}
+body:has(.editorial-cover) #latest .rp-home-daily-game-copy small{display:block;margin-top:4px;font:400 11px/1.5 Manrope,Inter,Arial,sans-serif;color:#6b6b6b;overflow-wrap:break-word}
+body:has(.editorial-cover) #latest .rp-home-daily-game:hover .rp-home-daily-game-copy strong{color:#a32331}
+@media(max-width:760px){body:has(.editorial-cover) #latest .home-24h--hero .rp-home-daily-games{margin-top:24px;padding-top:20px}body:has(.editorial-cover) #latest .rp-home-daily-game{min-height:70px}}
+@media(prefers-reduced-motion:reduce){body:has(.editorial-cover) #latest .rp-home-daily-game{transition:none}}
+
+/* Ensure the next module is visible promptly below the daily editions. */
+body:has(.editorial-cover) #latest .home-24h--hero #rp-home-daily-games {
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative;
+  scroll-margin-top:110px;
+}
+@media (min-width:761px) {
+  body:has(.editorial-cover) .frontpage.editorial-cover .home-24h--hero .home-24h-grid {
+    max-height:min(430px,calc(100dvh - 260px));
+  }
+}
