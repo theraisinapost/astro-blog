@@ -1,0 +1,30 @@
+/* The Raisina Post — native cross-document article-cover transition.
+ * An opt-in browser enhancement: ordinary links and loads work unchanged.
+ * Applied only on homepage and canonical article pages by deployment guards.
+ */
+@view-transition { navigation:auto; }
+
+::view-transition-old(root) {
+  animation:130ms ease-out both fade-out;
+}
+::view-transition-new(root) {
+  animation:190ms ease-in both fade-in;
+}
+::view-transition-group(rp-story-cover) {
+  animation-duration:300ms;
+  animation-timing-function:cubic-bezier(.22,.7,.2,1);
+}
+::view-transition-old(rp-story-cover),
+::view-transition-new(rp-story-cover) {
+  object-fit:cover;
+}
+@media(prefers-reduced-motion:reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(rp-story-cover),
+  ::view-transition-new(rp-story-cover),
+  ::view-transition-group(rp-story-cover) {
+    animation-duration:0.01ms!important;
+    animation-delay:0ms!important;
+  }
+}
