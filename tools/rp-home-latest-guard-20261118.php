@@ -11,20 +11,20 @@ function rp_latest_transform(string $html): string {
         !str_contains($html, '</head>')) return $html;
     $updated = preg_replace(
         '~(<script\b[^>]*src="/home-latest-auto\.js)(?:\?[^"]*)?("[^>]*></script>)~i',
-        '$1?v=20261118d$2', $html
+        '$1?v=20261118e$2', $html
     );
     if (!is_string($updated)) throw new RuntimeException('Cannot normalise script URL');
     if (!str_contains($updated, 'src="/home-latest-auto.js')) {
-        $updated=str_replace('</head>', '<script defer src="/home-latest-auto.js?v=20261118d"></script>' . "\n</head>", $updated);
+        $updated=str_replace('</head>', '<script defer src="/home-latest-auto.js?v=20261118e"></script>' . "\n</head>", $updated);
     }
     if (str_contains($updated, 'id="rp-home-daily-games"')) {
         $updated=preg_replace(
             '~(<link\b[^>]*href="/rp-home-daily-games\.css)(?:\?[^"]*)?("[^>]*>)~i',
-            '$1?v=20261118d$2', $updated
+            '$1?v=20261118e$2', $updated
         );
         if (!is_string($updated)) throw new RuntimeException('Cannot normalise Games style URL');
         if (!str_contains($updated,'href="/rp-home-daily-games.css')) {
-            $updated=str_replace('</head>', '<link rel="stylesheet" href="/rp-home-daily-games.css?v=20261118d">' . "\n</head>", $updated);
+            $updated=str_replace('</head>', '<link rel="stylesheet" href="/rp-home-daily-games.css?v=20261118e">' . "\n</head>", $updated);
         }
     }
     return $updated;
