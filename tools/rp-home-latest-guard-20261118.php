@@ -11,20 +11,20 @@ function rp_latest_transform(string $html): string {
         !str_contains($html, '</head>')) return $html;
     $updated = preg_replace(
         '~(<script\b[^>]*src="/home-latest-auto\.js)(?:\?[^"]*)?("[^>]*></script>)~i',
-        '$1?v=20261118e$2', $html
+        '$1?v=20261118f$2', $html
     );
     if (!is_string($updated)) throw new RuntimeException('Cannot normalise script URL');
     if (!str_contains($updated, 'src="/home-latest-auto.js')) {
-        $updated=str_replace('</head>', '<script defer src="/home-latest-auto.js?v=20261118e"></script>' . "\n</head>", $updated);
+        $updated=str_replace('</head>', '<script defer src="/home-latest-auto.js?v=20261118f"></script>' . "\n</head>", $updated);
     }
     if (str_contains($updated, 'id="rp-home-daily-games"')) {
         $updated=preg_replace(
             '~(<link\b[^>]*href="/rp-home-daily-games\.css)(?:\?[^"]*)?("[^>]*>)~i',
-            '$1?v=20261118e$2', $updated
+            '$1?v=20261118f$2', $updated
         );
         if (!is_string($updated)) throw new RuntimeException('Cannot normalise Games style URL');
         if (!str_contains($updated,'href="/rp-home-daily-games.css')) {
-            $updated=str_replace('</head>', '<link rel="stylesheet" href="/rp-home-daily-games.css?v=20261118e">' . "\n</head>", $updated);
+            $updated=str_replace('</head>', '<link rel="stylesheet" href="/rp-home-daily-games.css?v=20261118f">' . "\n</head>", $updated);
         }
     }
     return $updated;
@@ -52,7 +52,9 @@ try {
     $styleSource=$private.'/rp-home-daily-games-master.css';
     $index=$root.'/index.html';
     if (!is_file($index) || filesize($index)<25000) throw new RuntimeException('Unexpected missing/short homepage');
-    $filePairs=[[$scriptSource,$root.'/home-latest-auto.js',6000],[$styleSource,$root.'/rp-home-daily-games.css',2500]];
+    $filePairs=[[$scriptSource,$root.'/home-latest-auto.js',6000],[$styleSource,$root.'/rp-home-daily-games.css',2500],
+      [$private.'/raisina-sudoku-art.webp',$root.'/images/raisina-sudoku-art.webp',3000],
+      [$private.'/raisina-word-riddle-art.webp',$root.'/images/raisina-word-riddle-art.webp',3000]];
     foreach ($filePairs as [$source,$target,$minSize]) {
         if (!is_file($source) || filesize($source)<$minSize) throw new RuntimeException('Missing approved source '.basename($source));
         if (is_file($target) && sha1_file($target)===sha1_file($source)) continue;
