@@ -50,12 +50,12 @@ function rp_latest_transform(string $html): string {
     /* Swiss vertical NEWSROOM label; keep the underlying semantic heading. */
     $updated = preg_replace(
         '~(<link\b[^>]*href="/rp-home-newsroom-vertical\.css)(?:\?[^"]*)?("[^>]*>)~i',
-        '$1?v=20261118j$2', $updated
+        '$1?v=20261118k$2', $updated
     );
     if (!is_string($updated)) throw new RuntimeException('Cannot normalise Newsroom stylesheet');
     if (!str_contains($updated, 'href="/rp-home-newsroom-vertical.css')) {
         $updated=str_replace('</head>',
-            '<link rel="stylesheet" href="/rp-home-newsroom-vertical.css?v=20261118j">' . "\n</head>", $updated);
+            '<link rel="stylesheet" href="/rp-home-newsroom-vertical.css?v=20261118k">' . "\n</head>", $updated);
     }
     $updated = preg_replace(
         '~(<h3\b[^>]*id="section-more-reporting"[^>]*>)(?:Across the newsroom|Newsroom)(</h3>)~i',
