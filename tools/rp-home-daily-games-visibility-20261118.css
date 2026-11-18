@@ -113,3 +113,39 @@ body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-ga
     height:47px;
   }
 }
+
+/* Uploaded illustrated Games artwork, 18 November 2026.
+ * The exact user-supplied artwork replaces the prior generic line symbols.
+ * These decorative backgrounds are within existing accessible game links. */
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game {
+  grid-template-columns:minmax(0,1fr) 102px;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-icon {
+  width:102px;
+  height:102px;
+  min-width:102px;
+  background-color:transparent;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  border-radius:0;
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > a[href="/games/sudoku/"] .rp-home-daily-game-icon {
+  background-image:url("/images/raisina-sudoku-art.webp");
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > a[href="/games/word-riddle/"] .rp-home-daily-game-icon {
+  background-image:url("/images/raisina-word-riddle-art.webp");
+}
+body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-icon svg {
+  display:none;
+}
+@media(max-width:760px) {
+  body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game {
+    grid-template-columns:minmax(0,1fr) 76px;
+  }
+  body:has(.editorial-cover) #latest .rp-home-daily-games-list > .rp-home-daily-game .rp-home-daily-game-icon {
+    width:76px;
+    height:76px;
+    min-width:76px;
+  }
+}
