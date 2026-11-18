@@ -38,8 +38,8 @@ body:has(.editorial-cover) main#main #latest .home-secondary-heading > span {
  * of the actual horizontal scroll area; it scrolls off with the article. */
 body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail {
   box-sizing:border-box!important;
-  padding-left:calc(var(--rp-newsroom-letter-width) * .75)!important;
-  scroll-padding-inline-start:calc(var(--rp-newsroom-letter-width) * .75);
+  padding-left:calc(var(--rp-newsroom-letter-width) + 12px)!important;
+  scroll-padding-inline-start:calc(var(--rp-newsroom-letter-width) + 12px);
   overflow-x:auto;
   overflow-y:hidden;
 }
@@ -50,10 +50,9 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   position:relative;
   overflow:visible!important;
 }
-/* FULL PHOTO HEIGHT, NO BACKGROUND. Taller, lighter editorial lettering
- * almost touches the top and bottom of the photograph, with a very small
- * overlap by 25% of the LETTERING width into the photograph, with the other
- * lettering visibly crossing the image boundary. It belongs to the card, not the viewport. */
+/* FULL PHOTO HEIGHT, NO BACKGROUND. Tall, light vertical editorial lettering.
+ * The entire word remains OUTSIDE the photograph, separated by a 12px gutter.
+ * Because it belongs to the first card, it scrolls away with that card. */
 body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   > .rail-story:first-child::before {
   content:"NEWSROOM";
@@ -61,9 +60,8 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   z-index:9;
   box-sizing:border-box;
   inset-block:0;
-  /* Position by visible glyphs, not the transparent box. A -75% offset
-     left almost all painted letters outside the photograph. Shift right. */
-  left:calc(var(--rp-newsroom-letter-width) * -.46);
+  /* The lettering box's right edge ends 12px BEFORE the photograph. */
+  left:calc(-1 * var(--rp-newsroom-letter-width) - 12px);
   width:var(--rp-newsroom-letter-width);
   height:100%;
   display:flex;
@@ -93,7 +91,7 @@ body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
   }
   body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail
     > .rail-story:first-child::before {
-    left:calc(var(--rp-newsroom-letter-width) * -.46);
+    left:calc(-1 * var(--rp-newsroom-letter-width) - 12px);
     width:var(--rp-newsroom-letter-width);
     font-size:clamp(46px,11vw,60px);
     letter-spacing:-.08em;
