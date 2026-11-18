@@ -1,0 +1,74 @@
+/* The Raisina Post — Swiss vertical newsroom masthead, 2026-11-18.
+ * Scope: the homepage "Across the Newsroom" reporting rail ONLY.
+ * Keep every card, focus-mode overlay, carousel dimensions, and all other sections.
+ */
+body:has(.editorial-cover) main#main #latest.frontpage {
+  --rp-newsroom-rail-inset:clamp(70px,7.1vw,102px);
+}
+
+/* Move the section title into the beginning of its carousel rather than above it.
+ * The heading stays a real H3 in the DOM for accessibility/SEO. */
+body:has(.editorial-cover) main#main #latest .home-secondary-heading {
+  position:relative!important;
+  z-index:4;
+  display:block!important;
+  height:0!important;
+  min-height:0!important;
+  margin:var(--rp-home-inside-gap,clamp(32px,3vw,42px)) 0 0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:visible!important;
+  pointer-events:none;
+}
+body:has(.editorial-cover) main#main #latest .home-secondary-heading > span {
+  display:none!important;
+}
+body:has(.editorial-cover) main#main #latest .home-secondary-heading > h3 {
+  position:absolute!important;
+  z-index:5;
+  top:20px;
+  left:calc(var(--rp-newsroom-rail-inset) - clamp(29px,2.85vw,40px));
+  display:block!important;
+  width:max-content;
+  max-width:none;
+  min-width:0;
+  margin:0!important;
+  padding:12px 7px 13px!important;
+  border-left:2px solid #ae3642;
+  background:rgba(255,255,255,.94);
+  color:#151515!important;
+  font:800 clamp(29px,3.05vw,46px)/1.06 Inter,Manrope,Arial,sans-serif!important;
+  letter-spacing:-.065em!important;
+  text-transform:uppercase;
+  white-space:nowrap;
+  text-wrap:nowrap;
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  transform-origin:center;
+  user-select:none;
+  pointer-events:none;
+}
+/* The first photo shifts slightly to the right. The vertical masthead
+ * intentionally overlays ~10px of its left edge without blocking clicks. */
+body:has(.editorial-cover) main#main #latest > .latest-rail.home-mini-rail {
+  box-sizing:border-box!important;
+  padding-left:var(--rp-newsroom-rail-inset)!important;
+  scroll-padding-inline-start:var(--rp-newsroom-rail-inset);
+}
+@media(max-width:760px) {
+  body:has(.editorial-cover) main#main #latest.frontpage {
+    --rp-newsroom-rail-inset:62px;
+  }
+  body:has(.editorial-cover) main#main #latest .home-secondary-heading > h3 {
+    top:18px;
+    left:calc(var(--rp-newsroom-rail-inset) - 29px);
+    padding:9px 5px 10px!important;
+    font-size:28px!important;
+    letter-spacing:-.055em!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  body:has(.editorial-cover) main#main #latest .home-secondary-heading > h3 {
+    transition:none!important;
+  }
+}
